@@ -30,9 +30,9 @@ ENV S3_FILENAME **None**
 ENV MULTI_FILES no
 ENV SCHEDULE **None**
 
-ADD ./script.sh /opt/script.sh
-ADD ./start.sh /opt/start.sh
-#RUN chmod 777 /opt/*.sh
+COPY ./script.sh /script.sh
+COPY ./start.sh /start.sh
+RUN chmod 777 /opt/*.sh
 
 WORKDIR /opt
 
