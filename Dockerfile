@@ -32,10 +32,9 @@ ENV SCHEDULE **None**
 
 COPY ./script.sh /script.sh
 COPY ./start.sh /start.sh
-RUN chmod 777 /opt/*.sh
 
 WORKDIR /opt
 
-CMD ["/opt/start.sh"]
+CMD ["/start.sh"]
 
 
