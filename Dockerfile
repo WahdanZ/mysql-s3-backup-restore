@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM quay.io/jitesoft/alpine:latest
 
 
 RUN apk add --update --no-cache -v --virtual .build-deps \
