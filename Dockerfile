@@ -37,6 +37,6 @@ RUN chgrp -R 0 /opt && \
     chmod -R g=u /opt
 WORKDIR /opt
 
-#CMD ["/start.sh"]
+CMD ['tail -f /dev/null']
 
 
