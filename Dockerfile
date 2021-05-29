@@ -37,6 +37,6 @@ RUN chgrp -R 0 /opt && \
     chmod -R g=u /opt
 WORKDIR /opt
 
-CMD ["/opt/start.sh"]
+#CMD ["/start.sh"]
 
 
