@@ -32,10 +32,10 @@ ENV SCHEDULE **None**
 
 ADD ./script.sh /opt/script.sh
 ADD ./start.sh /opt/start.sh
-RUN chmod 777 /opt/*.sh
+#RUN chmod 777 /opt/*.sh
 
-#WORKDIR /opt
+WORKDIR /opt
 
-#CMD ["/opt/start.sh"]
+CMD ["/opt/start.sh"]
 
 
