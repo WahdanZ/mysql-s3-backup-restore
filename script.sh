@@ -1,5 +1,4 @@
 #! /bin/sh
-
 set -e
 if [ "${S3_ACCESS_KEY_ID}" == "**None**" ]; then
    echo "Warning: You did not set the S3_ACCESS_KEY_ID environment variable."
@@ -71,7 +70,8 @@ download_from_s3() {
 backup() {
    echo "Creating dump for ${MYSQL_DATABASE} from ${MYSQL_HOST}..."
    DUMP_FILE="/tmp/dump.sql.gz"
-   mysqldump $MYSQL_HOST_OPTS MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE
+   echo "mysqldump $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE"
+   mysqldump $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE
 }
 
 restore() {
@@ -95,7 +95,9 @@ restore() {
 case "$1" in
 'backup')
    backup
-   if [ $? == 0 ]; then
+   echo $?
+   if [ $? != 0 ]; then
+     echo "okay"
       if [ "${S3_FILENAME}" == "**None**" ]; then
          S3_FILE="${DUMP_START_TIME}.dump.sql.gz"
       else
