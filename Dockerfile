@@ -35,6 +35,6 @@ COPY ./start.sh /start.sh
 
 WORKDIR /opt
 
-CMD ["/start.sh"]
+CMD ["./start.sh"]
 
 
