@@ -81,7 +81,7 @@ backup() {
 
 restore() {
 
-   DUMP_PATH="/temp/$1"
+   DUMP_PATH="/tmp/$1"
    if ! mysql ${MYSQL_HOST_OPTS} -e "use ${MYSQL_DATABASE};"; then
       echo "${MYSQL_DATABASE} doesn't exists. Create new one..."
       mysql $MYSQL_HOST_OPTS -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
