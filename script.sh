@@ -71,7 +71,7 @@ backup() {
    echo "Creating dump for ${MYSQL_DATABASE} from ${MYSQL_HOST}..."
    DUMP_FILE="/tmp/dump.sql.gz"
    echo "mysqldump $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE"
-   mysqldump -alv -h  $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE
+   mysqldump -alv $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE
 }
 
 restore() {
