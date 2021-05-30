@@ -96,7 +96,7 @@ case "$1" in
 'backup')
    backup
    echo $?
-   if [ $? != 0 ]; then
+   if [ $? == 0 ]; then
      echo "okay"
       if [ "${S3_FILENAME}" == "**None**" ]; then
          S3_FILE="${DUMP_START_TIME}.dump.sql.gz"
