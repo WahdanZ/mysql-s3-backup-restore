@@ -2,15 +2,16 @@
 set -e
 if [ "${S3_ACCESS_KEY_ID}" == "**None**" ]; then
    echo "Warning: You did not set the S3_ACCESS_KEY_ID environment variable."
-fi
 else
     export AWS_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
+fi
 
 if [ "${S3_SECRET_ACCESS_KEY}" == "**None**" ]; then
    echo "Warning: You did not set the S3_SECRET_ACCESS_KEY environment variable."
-fi
+
 else
   export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
+fi
 
 if [ "${S3_BUCKET}" == "**None**" ]; then
    echo "You need to set the S3_BUCKET environment variable."
