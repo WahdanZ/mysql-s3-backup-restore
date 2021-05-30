@@ -1,5 +1,5 @@
-FROM quay.io/jitesoft/alpine:latest
-
+FROM alpine:latest
+MAINTAINER Wahdanz
 
 RUN apk add --update --no-cache -v --virtual .build-deps \
    curl py-pip \
