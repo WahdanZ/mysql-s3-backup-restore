@@ -42,7 +42,7 @@ upload_to_s3() {
 
    echo "Uploading ${DEST_FILE} on S3..."
 
-   cat $SRC_FILE | aws $AWS_ARGS s3 cp - s3://$S3_BUCKET/$S3_PREFIX/$DEST_FILE $
+   cat $SRC_FILE | aws $AWS_ARGS s3 cp - s3://$S3_BUCKET/$S3_PREFIX/$DEST_FILE
 
    if [ $? != 0 ]; then
       echo >&2 "Error uploading ${DEST_FILE} on S3"
@@ -71,7 +71,7 @@ backup() {
    echo "Creating dump for ${MYSQL_DATABASE} from ${MYSQL_HOST}..."
    DUMP_FILE="/tmp/dump.sql.gz"
    echo "mysqldump $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE"
-   mysqldump $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE
+   mysqldump -alv -h  $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE
 }
 
 restore() {
@@ -91,6 +91,7 @@ restore() {
    echo "Restore finished: ${DUMP_PATH} -> ${MYSQL_DATABASE}"
 
 }
+DUMP_START_TIME=$(date +"%Y-%m-%dT%H%M%SZ")
 
 case "$1" in
 'backup')
