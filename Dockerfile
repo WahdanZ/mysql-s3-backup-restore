@@ -32,7 +32,7 @@ ENV SCHEDULE **None**
 
 ADD ./script.sh /opt/script.sh
 ADD ./start.sh /opt/start.sh
-#RUN chmod 777 /opt/*.sh
+RUN chmod 777 /opt/*.sh
 RUN chgrp -R 0 /opt && \
     chmod -R g=u /opt
 #WORKDIR /opt
