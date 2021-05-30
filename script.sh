@@ -119,7 +119,7 @@ case "$1" in
 'restore')
    [ -z "$2" ] && echo "DEST_FILE parameter empty" && exit 1
    download_from_s3 $2
-   [ ! -f /temp/$2 ] && echo "/tmp/$2 does not exists" && exit 1
+   [ ! -f /tmp/$2 ] && echo "/tmp/$2 does not exists" && exit 1
    restore $2
 
    ;;
