@@ -65,7 +65,7 @@ download_from_s3() {
 
    echo "Downloading ${DEST_FILE} from S3(${S3_ENDPOINT})..."
 
-   cat $SRC_FILE | aws $AWS_ARGS s3 get - s3://$S3_BUCKET/$S3_PREFIX/$DEST_FILE "/tmp/$DEST_FILE"
+    aws $AWS_ARGS s3 get s3://$S3_BUCKET/$S3_PREFIX/$DEST_FILE "/tmp/$DEST_FILE"
 
    if [ $? != 0 ]; then
       echo >&2 "Error downloading ${DEST_FILE} from S3"
