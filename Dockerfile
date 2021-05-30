@@ -1,8 +1,11 @@
 FROM alpine:latest
 MAINTAINER Wahdanz
-
+ENV LANG="en_US.UTF-8" \
+    LC_ALL="en_US.UTF-8" \
+    LANGUAGE="en_US.UTF-8"
 RUN apk add --update --no-cache -v --virtual .build-deps \
    curl py-pip \
+   && add nano \
     && apk add -v  \
         mysql-client \
            && pip install awscli \

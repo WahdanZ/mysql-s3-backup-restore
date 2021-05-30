@@ -84,7 +84,7 @@ restore() {
    DUMP_PATH="/temp/$1"
    if ! mysql ${MYSQL_OPTIONS} -e "use ${MYSQL_DATABASE};"; then
       echo "${MYSQL_DATABASE} doesn't exists. Create new one..."
-      mysql $MYSQL_HOST_OPTS ${MYSQL_OPTIONS} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+      mysql $MYSQL_HOST_OPTS -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
    fi
 
    echo "Restore MySQL database from ${DUMP_PATH}..."
