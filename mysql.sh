@@ -96,18 +96,15 @@ restore() {
    echo "Restore finished: ${DUMP_PATH} -> ${MYSQL_DATABASE}"
 
 }
-DUMP_START_TIME=$(date +"%Y-%m-%dT%H%M%SZ")
-
-case "$1" in
-'backup')
-   backup
+backup_upload() {
+ backup
    echo $?
    if [ $? == 0 ]; then
      echo "okay"
       if [ "${S3_FILENAME}" == "**None**" ]; then
-         S3_FILE="${DUMP_START_TIME}.dump.sql.gz"
+         S3_FILE="${DUMP_START_TIME}${1}.dump.sql.gz"
       else
-         S3_FILE="${S3_FILENAME}.sql.gz"
+         S3_FILE="${S3_FILENAME}${1}.sql.gz"
       fi
 
       upload_to_s3 $DUMP_FILE $S3_FILE
@@ -115,11 +112,22 @@ case "$1" in
       echo >&2 "Error creating dump of  databases"
    fi
    echo "SQL backup finished"
+
+}
+DUMP_START_TIME=$(date +"%Y-%m-%dT%H%M%SZ")
+
+case "$1" in
+'backup')
+   backup_upload
    ;;
 'restore')
    [ -z "$2" ] && echo "DEST_FILE parameter empty" && exit 1
    download_from_s3 $2
    [ ! -f /tmp/$2 ] && echo "/tmp/$2 does not exists" && exit 1
+   # backup current db before restore 
+   if [ $3 != false ]; then
+   backup_upload '-restore'
+   fi
    restore $2
 
    ;;
@@ -128,13 +136,5 @@ case "$1" in
  ;;
 esac
 
-
-echo -e  "[default]\n
-access_key =AKIAIOSFODNN7EXAMPLE\n
-secret_key =AKIAIOSFODNN7EXAMPLE\n
-host_base =http://minio-btt-testing.kermit-noprod-b.itn.intraorange/\n
-host_bucket ='\n
-signature_v2 =True \n
-use_https =False\n" > /.s3cfg
 
 
