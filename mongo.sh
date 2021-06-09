@@ -18,22 +18,22 @@ if [ "${S3_BUCKET}" == "**None**" ]; then
    exit 1
 fi
 
-if [ "${MYSQL_HOST}" == "**None**" ]; then
-   echo "You need to set the MYSQL_HOST environment variable."
+if [ "${MONGO_HOST}" == "**None**" ]; then
+   echo "You need to set the MONGO_HOST environment variable."
    exit 1
 fi
 
-if [ "${MYSQL_USER}" == "**None**" ]; then
-   echo "You need to set the MYSQL_USER environment variable."
+if [ "${MONGO_USER}" == "**None**" ]; then
+   echo "You need to set the MONGO_USER environment variable."
    exit 1
 fi
 
-if [ "${MYSQL_PASSWORD}" == "**None**" ]; then
-   echo "You need to set the MYSQL_PASSWORD environment variable or link to a container named MYSQL."
+if [ "${MONGO_PASSWORD}" == "**None**" ]; then
+   echo "You need to set the MONGO_PASSWORD environment variable or link to a container named Mongo."
    exit 1
 fi
-DUMP_FILE="/tmp/dump.sql.gz"
-MYSQL_HOST_OPTS="-h $MYSQL_HOST -P $MYSQL_PORT -u$MYSQL_USER -p$MYSQL_PASSWORD"
+DUMP_FILE="/tmp/dump.mongo.gz"
+MONGO_HOST_OPTS="-h $MONGO_HOST -P $MONGO_PORT -u$MONGO_USER -p$MONGO_PASSWORD"
 
 upload_to_s3() {
    SRC_FILE=$1
@@ -73,27 +73,23 @@ download_from_s3() {
 }
 
 backup() {
-   echo "Creating dump for ${MYSQL_DATABASE} from ${MYSQL_HOST}..."
+   echo "Creating dump for ${MONGO_DATABASE} from ${MONGO_HOST}..."
    DUMP_FILE="/tmp/dump.sql.gz"
-   echo "mysqldump $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE"
-   mysqldump -alv $MYSQL_HOST_OPTS $MYSQL_OPTIONS $MYSQL_DATABASE | gzip >$DUMP_FILE
+   echo "mongodump $MONGO_HOST_OPTS --db $MONGO_DATABASE --gzip --archive=$DUMP_FILE"
+   mongodump  $MONGO_HOST_OPTS --db $MONGO_DATABASE --gzip --archive=$DUMP_FILE
 }
 
 restore() {
 
    DUMP_PATH="/tmp/$1"
-   if ! mysql ${MYSQL_HOST_OPTS} -e "use ${MYSQL_DATABASE};"; then
-      echo "${MYSQL_DATABASE} doesn't exists. Create new one..."
-      mysql $MYSQL_HOST_OPTS -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
-   fi
 
-   echo "Restore MySQL database from ${DUMP_PATH}..."
-   if ! gunzip <${DUMP_PATH} | mysql $MYSQL_HOST_OPTS ${MYSQL_OPTIONS} ${MYSQL_DATABASE}; then
+   echo "Restore MONGO database from ${DUMP_PATH}..."
+   if ! gunzip <${DUMP_PATH} | mongorestore $MONGO_HOST_OPTS --gzip --archive=${DUMP_PATH}; then
       echo "Error restoring database" >&2
       exit 1
    fi
 
-   echo "Restore finished: ${DUMP_PATH} -> ${MYSQL_DATABASE}"
+   echo "Restore finished: ${DUMP_PATH} -> ${MONGO_DATABASE}"
 
 }
 DUMP_START_TIME=$(date +"%Y-%m-%dT%H%M%SZ")
