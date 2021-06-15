@@ -26,8 +26,6 @@ RUN set -eux \
     && echo -e '#!/bin/sh\n/lib/ld-musl-x86_64.so.1 --library-path /lib /usr/bin/oc-dynamically-linked "$@"' > /usr/bin/oc \
     && chmod +x /usr/bin/oc \
     && oc version --client
-COPY --from=builder /usr/bin/oc-dynamically-linked /usr/bin/oc-dynamically-linked
-COPY --from=builder /usr/bin/oc /usr/bin/oc
 RUN apk add --update ca-certificates
 
 
