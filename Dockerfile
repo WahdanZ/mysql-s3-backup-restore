@@ -17,16 +17,13 @@ RUN apk add --update --no-cache -v --virtual .build-deps \
         curl \
       &&  apk del py-pip \
     && rm -rf /var/cache/apk/*
-RUN apk add --no-cache --virtual .build-deps \
-    curl \
-    tar \
-    && curl --retry 7 -Lo /tmp/client-tools.tar.gz "https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz"
+    
+RUN apk --no-cache add $BUILD_DEPS $RUN_DEPS && \
+    curl -sLo /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v$(echo $OC_VERSION | cut -d'.' -f 1)/clients/oc/$OC_VERSION/linux/oc.tar.gz && \
+    tar xzvf /tmp/oc.tar.gz -C /usr/local/bin/ oc && \
+    rm -rf /tmp/oc.tar.gz && \
+    apk del $BUILD_DEPS
 
-RUN tar zxf /tmp/client-tools.tar.gz -C /usr/local/bin oc \
-    && rm /tmp/client-tools.tar.gz \
-    && apk del .build-deps
-
-# ADDED: Resolve issue x509 oc login issue
 RUN apk add --update ca-certificates
 
 
