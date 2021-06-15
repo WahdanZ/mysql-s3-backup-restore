@@ -18,12 +18,16 @@ RUN apk add --update --no-cache -v --virtual .build-deps \
       &&  apk del py-pip \
     && rm -rf /var/cache/apk/*
     
-RUN apk --no-cache add $BUILD_DEPS $RUN_DEPS && \
-    curl -sLo /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v$(echo $OC_VERSION | cut -d'.' -f 1)/clients/oc/$OC_VERSION/linux/oc.tar.gz && \
-    tar xzvf /tmp/oc.tar.gz -C /usr/local/bin/ oc && \
-    rm -rf /tmp/oc.tar.gz && \
-    apk del $BUILD_DEPS
-
+RUN set -eux \
+    && curl -sS -L -o /tmp/openshift-client-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz \
+    && mkdir /tmp/openshift-client-linux/ \
+    && tar -xzf /tmp/openshift-client-linux.tar.gz -C /tmp/openshift-client-linux/ \
+    && mv /tmp/openshift-client-linux/oc /usr/bin/oc-dynamically-linked \
+    && echo -e '#!/bin/sh\n/lib/ld-musl-x86_64.so.1 --library-path /lib /usr/bin/oc-dynamically-linked "$@"' > /usr/bin/oc \
+    && chmod +x /usr/bin/oc \
+    && oc version --client
+COPY --from=builder /usr/bin/oc-dynamically-linked /usr/bin/oc-dynamically-linked
+COPY --from=builder /usr/bin/oc /usr/bin/oc
 RUN apk add --update ca-certificates
 
 
