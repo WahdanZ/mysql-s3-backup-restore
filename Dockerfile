@@ -1,8 +1,10 @@
 FROM alpine:latest
-MAINTAINER Wahdanz
 ENV LANG="en_US.UTF-8" \
     LC_ALL="en_US.UTF-8" \
     LANGUAGE="en_US.UTF-8"
+ARG OC_VERSION=4.5
+ARG BUILD_DEPS='tar gzip'
+ARG RUN_DEPS='curl ca-certificates gettext'
 RUN apk add --update --no-cache -v --virtual .build-deps \
    curl py-pip \
    && apk add nano \
@@ -15,6 +17,13 @@ RUN apk add --update --no-cache -v --virtual .build-deps \
         curl \
       &&  apk del py-pip \
     && rm -rf /var/cache/apk/*
+    
+RUN apk --no-cache add $BUILD_DEPS $RUN_DEPS && \
+    curl -sLo /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v$(echo $OC_VERSION | cut -d'.' -f 1)/clients/oc/$OC_VERSION/linux/oc.tar.gz && \
+    tar xzvf /tmp/oc.tar.gz -C /usr/local/bin/ && \
+    rm -rf /tmp/oc.tar.gz && \
+    apk del $BUILD_DEPS
+
 
 
 ENV MYSQL_OPTIONS --quote-names --quick --add-drop-table --add-locks --allow-keywords --disable-keys --extended-insert --single-transaction --create-options --comments --net_buffer_length=16384
